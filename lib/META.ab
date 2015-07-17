@@ -1,0 +1,3 @@
+version = "$(pkg_version)"
+ppx = "ocaml-monadic"
+

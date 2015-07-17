@@ -1,0 +1,26 @@
+Name: ocaml-monadic
+Version: 0.0.1
+Synopsis: PPX monadic
+Authors: JHU PL Lab <pl.cs@jhu.edu>
+License: BSD-4-clause
+
+Description: A simple PPX language extension to include monadic binds.
+
+OASISFormat: 0.4
+BuildTools: ocamlbuild
+Plugins: META (0.4), DevFiles (0.4)
+AlphaFeatures: ocamlbuild_more_args
+XOCamlbuildExtraArgs: -use-ocamlfind
+
+OCamlVersion: >= 4.02
+FilesAB: lib/META.ab
+
+PreInstallCommand: $ocamlfind install ocaml-monadic lib/META
+PostInstallCommand: $ocamlfind remove ocaml-monadic
+
+Executable "ocaml-monadic"
+    Path: src
+    BuildDepends: compiler-libs.common
+    MainIs: ocaml_monadic.ml
+    CompiledObject: best
+

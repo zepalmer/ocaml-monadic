@@ -1,3 +1,6 @@
 /_build
 /*.native
 /setup.*
+/Makefile
+/configure
+

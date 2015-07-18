@@ -19,6 +19,11 @@ FilesAB: lib/META.ab
 PreInstallCommand: $ocamlfind install ocaml-monadic lib/META
 PostInstallCommand: $ocamlfind remove ocaml-monadic
 
+Library "ocaml-monadic"
+    Path: src
+    Modules:
+       Ocaml_monadic 
+
 Executable ocaml_monadic
     Path: src
     BuildDepends: compiler-libs.common

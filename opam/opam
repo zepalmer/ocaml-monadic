@@ -15,13 +15,6 @@ build-test: [
   ["ocaml" "setup.ml" "-build"]
   ["ocaml" "setup.ml" "-test"]
 ]
-remove: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-uninstall"]
-  ["ocaml" "setup.ml" "-clean"]
-]
 depends: [
   "oasis" {build & >= "0.4"}
   "ocamlfind" {build}

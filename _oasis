@@ -3,7 +3,7 @@ Version: 0.0.1
 Synopsis: PPX monadic
 Authors: JHU PL Lab <pl.cs@jhu.edu>
 Maintainers: JHU PL Lab <pl.cs@jhu.edu>
-License: BSD-4-clause
+License: BSD-3-clause
 
 Description: A simple PPX language extension to include monadic binds.
 

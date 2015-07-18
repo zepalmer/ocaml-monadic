@@ -14,13 +14,7 @@ AlphaFeatures: ocamlbuild_more_args
 XOCamlbuildExtraArgs: -use-ocamlfind
 
 OCamlVersion: >= 4.02
-
-Library "ocaml-monadic"
-    Path: src
-    Modules:
-       Ocaml_monadic
-    XMETAEnable: true
-    XMETAExtraLines: ppx="ocaml_monadic"
+FilesAB: lib/META.ab
 
 Executable ocaml_monadic
     Path: src

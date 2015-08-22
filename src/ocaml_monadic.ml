@@ -73,7 +73,7 @@ let ocaml_monadic_mapper argv =
                   ; pexp_desc =
                     Pexp_apply(
                       bind_ident,
-                      [ (no_label, bind_expr)
+                      [ (no_label, mapper.expr mapper bind_expr)
                       ; (no_label, cont_function)
                       ]
                     )

@@ -19,6 +19,15 @@ let nondeterminism_test =
   return (x+y)
 ;;
 
+let nested_bind_test =
+  let open NondeterminismMonad in
+  let%bind x =
+    let%bind y = [1;2;3] in
+    return (y+1)
+  in
+  return (x+1)
+;;
+
 let halt_with s = print_endline s; exit 1;;
 
 let () =
@@ -29,6 +38,14 @@ let () =
       halt_with
         ("Unexpected value from nondeterminism test: " ^
           string_of_list string_of_int nondeterminism_test)
+  end;
+  begin
+    match nested_bind_test with
+    | [3;4;5] -> ()
+    | _ ->
+      halt_with
+      ("Unexpected value from nested_bind test: " ^
+          string_of_list string_of_int nested_bind_test)
   end;
   print_endline "All tests passed."
 ;;

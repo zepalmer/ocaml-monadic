@@ -10,6 +10,7 @@ let string_of_list f xs =
 module NondeterminismMonad = struct
   let return x = [x];;
   let bind m k = List.concat (List.map k m);;
+  let zero () = [];;
 end;;
 
 let nondeterminism_test =
@@ -28,6 +29,20 @@ let nested_bind_test =
   return (x+1)
 ;;
 
+let orzero_test_first =
+  let open NondeterminismMonad in
+  let a = [1;2] in
+  let%orzero [x;y] = a in
+  return @@ x + y
+;;
+
+let orzero_test_second =
+  let open NondeterminismMonad in
+  let b = [1;2;3] in
+  let%orzero [x;y] = b in
+  return @@ x + y
+;;
+
 let halt_with s = print_endline s; exit 1;;
 
 let () =
@@ -44,9 +59,24 @@ let () =
     | [3;4;5] -> ()
     | _ ->
       halt_with
-      ("Unexpected value from nested_bind test: " ^
+      ("Unexpected value from nested bind test: " ^
           string_of_list string_of_int nested_bind_test)
+  end;
+  begin
+    match orzero_test_first with
+    | [3] -> ()
+    | _ ->
+      halt_with
+      ("Unexpected value from first orzero test: " ^
+          string_of_list string_of_int orzero_test_first)
+  end;
+  begin
+    match orzero_test_second with
+    | [] -> ()
+    | _ ->
+      halt_with
+      ("Unexpected value from second orzero test: " ^
+          string_of_list string_of_int orzero_test_second)
   end;
   print_endline "All tests passed."
 ;;
-

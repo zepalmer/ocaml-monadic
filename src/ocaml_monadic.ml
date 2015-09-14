@@ -14,7 +14,7 @@ let ghostify loc =
 let no_label = "";;
 
 let ocaml_monadic_mapper argv =
-    (* We override let%bind expressions to call the "bind" in context. *)
+    (* We override the expr mapper to catch bind and orzero.  *)
     { default_mapper with
       expr = fun mapper expr ->
         match expr with
@@ -64,6 +64,68 @@ let ocaml_monadic_mapper argv =
                   mapper.expr mapper body
               in
               bind_wrap value_bindings
+            | _ -> expr
+          end
+        | { pexp_desc =
+            Pexp_extension( { txt = "orzero"; loc }, payload )
+          } ->
+          with_default_loc (ghostify loc) @@ fun () ->
+          (* Matches "orzero"-annotated expressions. *)
+          begin
+            match payload with
+            | PStr [
+                { pstr_desc =
+                  Pstr_eval(
+                    { pexp_desc =
+                      Pexp_let(
+                        Nonrecursive,
+                        value_bindings,
+                        body
+                      )
+                    },
+                    []
+                  )
+                }
+              ] ->
+              (* This is a let%orzero expression.  It's of the form
+                   let%orzero $p1 = $e1 and ... and $pn = $en in $e0
+                 and we want it to take the form
+                   match $e1 with
+                   | $p1 -> (match $e2 with
+                             | $p2 -> ...
+                                      (match $en with
+                                       | $pn -> $e0
+                                       | _ -> zero ())
+                             | _ -> zero ())
+                   | _ -> zero ()
+              *)
+              let rec orzero_wrap value_bindings' =
+                match value_bindings' with
+                | { pvb_pat = orzero_pattern
+                  ; pvb_expr = orzero_expr
+                  ; pvb_attributes = []
+                  ; pvb_loc = orzero_loc
+                  }::value_bindings'' ->
+                  (* This is the name of the "zero" function. *)
+                  let zero_ident = Exp.ident @@ mkident "zero" in
+                  (* This is the recursive call for the success branch. *)
+                  let success_branch = orzero_wrap value_bindings'' in
+                  (* For the failure branch, we call zero. *)
+                  let unit_value =
+                    Exp.construct (mkident "()") None
+                  in
+                  let failure_branch =
+                    Exp.apply zero_ident [(no_label, unit_value)]
+                  in
+                  Exp.match_ orzero_expr
+                    [ Exp.case orzero_pattern success_branch
+                    ; Exp.case (Pat.any ()) failure_branch
+                    ]
+                | _ ->
+                  (* Nothing left to do.  Just return the body. *)
+                  mapper.expr mapper body
+              in
+              orzero_wrap value_bindings
             | _ -> expr
           end
         | _ -> default_mapper.expr mapper expr

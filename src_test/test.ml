@@ -43,6 +43,25 @@ let orzero_test_second =
   return @@ x + y
 ;;
 
+let orzero_test_third =
+  let open NondeterminismMonad in
+  let a = [1;2] in
+  let b = [1;2;3] in
+  let%orzero [x;y] = a in
+  let%orzero [z] = b in
+  return @@ x + y + z
+;;
+
+let orzero_test_fourth =
+  let open NondeterminismMonad in
+  let a = [1;2] in
+  let%orzero [x] =
+    let%orzero [y;z] = a in
+    return @@ y + z
+  in
+  return @@ x + 1
+;;
+
 let halt_with s = print_endline s; exit 1;;
 
 let () =
@@ -77,6 +96,22 @@ let () =
       halt_with
       ("Unexpected value from second orzero test: " ^
           string_of_list string_of_int orzero_test_second)
+  end;
+  begin
+    match orzero_test_third with
+    | [] -> ()
+    | _ ->
+      halt_with
+      ("Unexpected value from third orzero test: " ^
+          string_of_list string_of_int orzero_test_third)
+  end;
+  begin
+    match orzero_test_fourth with
+    | [4] -> ()
+    | _ ->
+      halt_with
+      ("Unexpected value from fourth orzero test: " ^
+          string_of_list string_of_int orzero_test_fourth)
   end;
   print_endline "All tests passed."
 ;;

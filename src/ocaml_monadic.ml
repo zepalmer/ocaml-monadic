@@ -117,7 +117,7 @@ let ocaml_monadic_mapper argv =
                   let failure_branch =
                     Exp.apply zero_ident [(no_label, unit_value)]
                   in
-                  Exp.match_ orzero_expr
+                  Exp.match_ (mapper.expr mapper orzero_expr)
                     [ Exp.case orzero_pattern success_branch
                     ; Exp.case (Pat.any ()) failure_branch
                     ]

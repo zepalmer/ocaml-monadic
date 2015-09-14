@@ -5,6 +5,8 @@ open Parsetree;;
 open Location;;
 open Longident;;
 
+let mkident name = { txt = Lident name; loc = !default_loc };;
+
 let ghostify loc =
     { loc with loc_ghost = true }
 ;;
@@ -19,18 +21,14 @@ let ocaml_monadic_mapper argv =
         | { pexp_desc =
             Pexp_extension( { txt = "bind"; loc }, payload )
           } ->
+          with_default_loc (ghostify loc) @@ fun () ->
           (* Matches "bind"-annotated expressions. *)
           begin
             match payload with
             | PStr [
                 { pstr_desc =
                   Pstr_eval(
-                    { pexp_desc =
-                      Pexp_let(
-                        Nonrecursive,
-                        value_bindings,
-                        body
-                      )
+                    { pexp_desc = Pexp_let(Nonrecursive, value_bindings, body)
                     },
                     []
                   )
@@ -51,33 +49,16 @@ let ocaml_monadic_mapper argv =
                   (* Recurse and then wrap the resulting body. *)
                   let body' = bind_wrap value_bindings'' in
                   (* This is the name of the "bind" function. *)
-                  let bind_ident =
-                    { pexp_attributes = []
-                    ; pexp_loc = ghostify bind_loc
-                    ; pexp_desc = Pexp_ident({
-                        txt = Lident "bind";
-                        loc = ghostify bind_loc
-                      })
-                    }
-                  in
+                  let bind_ident = Exp.ident @@ mkident "bind" in
                   (* This is the function we will be calling. *)
                   let cont_function =
-                    { pexp_attributes = []
-                    ; pexp_loc = ghostify bind_loc
-                    ; pexp_desc = Pexp_fun(no_label, None, bind_pattern, body')
-                    }
+                    Exp.fun_ no_label None bind_pattern body'
                   in
                   (* And finally, here's the wrapped expression. *)
-                  { pexp_attributes = []
-                  ; pexp_loc = bind_loc
-                  ; pexp_desc =
-                    Pexp_apply(
-                      bind_ident,
-                      [ (no_label, mapper.expr mapper bind_expr)
-                      ; (no_label, cont_function)
-                      ]
-                    )
-                  }
+                  Exp.apply bind_ident
+                    [ (no_label, mapper.expr mapper bind_expr)
+                    ; (no_label, cont_function)
+                    ]
                 | _ ->
                   (* Nothing left to do.  Just return the body. *)
                   mapper.expr mapper body
@@ -90,4 +71,3 @@ let ocaml_monadic_mapper argv =
 ;;
 
 let () = register "bind" ocaml_monadic_mapper;;
-

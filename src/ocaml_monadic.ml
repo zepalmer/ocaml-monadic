@@ -77,11 +77,7 @@ let ocaml_monadic_mapper argv =
                 { pstr_desc =
                   Pstr_eval(
                     { pexp_desc =
-                      Pexp_let(
-                        Nonrecursive,
-                        value_bindings,
-                        body
-                      )
+                      Pexp_let(Nonrecursive, value_bindings, body)
                     },
                     []
                   )
@@ -126,6 +122,35 @@ let ocaml_monadic_mapper argv =
                   mapper.expr mapper body
               in
               orzero_wrap value_bindings
+            | _ -> expr
+          end
+        | { pexp_desc =
+            Pexp_sequence(
+              { pexp_desc = Pexp_extension({ txt = "guard" }, payload)
+              },
+              body_expr
+            )
+          } ->
+          begin
+            match payload with
+            | PStr [{ pstr_desc = Pstr_eval(guard_expr, attrs) }] ->
+              (* This is a sequenced expression with a [%guard ...] extension.  It
+                 takes the form
+                   [%guard expr']; expr
+                 and we want it to take the form
+                   if expr' then expr else zero ()
+              *)
+              let unit_value = Exp.construct (mkident "()") None in
+              let zero_ident = Exp.ident @@ mkident "zero" in
+              let guard_expr' =
+                List.fold_left
+                  Exp.attr (default_mapper.expr mapper guard_expr) attrs
+              in
+              let body_expr' = default_mapper.expr mapper body_expr in
+              let zero_invocation =
+                Exp.apply zero_ident [(no_label, unit_value)]
+              in
+              Exp.ifthenelse guard_expr' body_expr' (Some zero_invocation)
             | _ -> expr
           end
         | _ -> default_mapper.expr mapper expr

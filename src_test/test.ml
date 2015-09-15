@@ -62,6 +62,14 @@ let orzero_test_fourth =
   return @@ x + 1
 ;;
 
+let guard_test =
+  let open NondeterminismMonad in
+  let x = [1;2;3;4] in
+  let%bind y = x in
+  [%guard y mod 2 == 0];
+  return y
+;;
+
 let halt_with s = print_endline s; exit 1;;
 
 let () =
@@ -112,6 +120,14 @@ let () =
       halt_with
       ("Unexpected value from fourth orzero test: " ^
           string_of_list string_of_int orzero_test_fourth)
+  end;
+  begin
+    match guard_test with
+    | [2;4] -> ()
+    | _ ->
+      halt_with
+      ("Unexpected value from guard test: " ^
+        string_of_list string_of_int guard_test)
   end;
   print_endline "All tests passed."
 ;;

@@ -70,6 +70,16 @@ let guard_test =
   return y
 ;;
 
+let chained_guard_test =
+  let open NondeterminismMonad in
+  let x = [-9;-8;-7;-6;-5;-4;-3;-2;-1;0;1;2;3;4;5;6;7;8;9] in
+  let%bind y = x in
+  [%guard y mod 2 == 0];
+  [%guard y > 0];
+  [%guard y <> 4];
+  return y
+;;
+
 let halt_with s = print_endline s; exit 1;;
 
 let () =
@@ -128,6 +138,14 @@ let () =
       halt_with
       ("Unexpected value from guard test: " ^
         string_of_list string_of_int guard_test)
+  end;
+  begin
+    match chained_guard_test with
+    | [2;6;8] -> ()
+    | _ ->
+      halt_with
+      ("Unexpected value from chained guard test: " ^
+        string_of_list string_of_int chained_guard_test)
   end;
   print_endline "All tests passed."
 ;;

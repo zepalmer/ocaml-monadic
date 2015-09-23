@@ -144,9 +144,9 @@ let ocaml_monadic_mapper argv =
               let zero_ident = Exp.ident @@ mkident "zero" in
               let guard_expr' =
                 List.fold_left
-                  Exp.attr (default_mapper.expr mapper guard_expr) attrs
+                  Exp.attr (mapper.expr mapper guard_expr) attrs
               in
-              let body_expr' = default_mapper.expr mapper body_expr in
+              let body_expr' = mapper.expr mapper body_expr in
               let zero_invocation =
                 Exp.apply zero_ident [(no_label, unit_value)]
               in

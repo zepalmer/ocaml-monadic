@@ -1,5 +1,5 @@
 Name: ocaml-monadic
-Version: 0.3.0
+Version: 0.3.1
 Synopsis: PPX monadic
 Authors: JHU PL Lab <pl.cs@jhu.edu>
 Maintainers: JHU PL Lab <pl.cs@jhu.edu>

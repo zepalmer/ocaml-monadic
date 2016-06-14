@@ -5,14 +5,6 @@ open Parsetree;;
 open Location;;
 open Longident;;
 
-let mkident name = { txt = Lident name; loc = !default_loc };;
-
-let ghostify loc =
-  { loc with loc_ghost = true }
-;;
-
-let no_label = "";;
-
 let ocaml_monadic_mapper argv =
   (* We override the expr mapper to catch bind and orzero.  *)
   { default_mapper with
@@ -38,7 +30,7 @@ let ocaml_monadic_mapper argv =
                 (* Recurse and then wrap the resulting body. *)
                 let body' = bind_wrap value_bindings'' in
                 let cont_function =
-                  Exp.fun_ no_label None bind_pattern body'
+                  [%expr fun [%p bind_pattern] -> [%e body']]
                 in
                 [%expr
                   bind [%e mapper.expr mapper bind_expr] [%e cont_function]]

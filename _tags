@@ -1,0 +1,29 @@
+# OASIS_START
+# DO NOT EDIT (digest: 524ff795da0808f33b65faace53e2b47)
+# Ignore VCS directories, you can use the same kind of rule outside
+# OASIS_START/STOP if you want to exclude directories that contains
+# useless stuff for the build process
+true: annot, bin_annot
+<**/.svn>: -traverse
+<**/.svn>: not_hygienic
+".bzr": -traverse
+".bzr": not_hygienic
+".hg": -traverse
+".hg": not_hygienic
+".git": -traverse
+".git": not_hygienic
+"_darcs": -traverse
+"_darcs": not_hygienic
+# Executable ocaml_monadic
+<src/ocaml_monadic.{native,byte}>: package(compiler-libs.common)
+<src/ocaml_monadic.{native,byte}>: package(ppx_tools)
+<src/ocaml_monadic.{native,byte}>: package(ppx_tools.metaquot)
+<src/*.ml{,i,y}>: package(compiler-libs.common)
+<src/*.ml{,i,y}>: package(ppx_tools)
+<src/*.ml{,i,y}>: package(ppx_tools.metaquot)
+# Executable ocaml_monadic_tests
+"src_test/test.byte": oasis_executable_ocaml_monadic_tests_byte
+<src_test/*.ml{,i,y}>: oasis_executable_ocaml_monadic_tests_byte
+"src_test/test.byte": oasis_executable_ocaml_monadic_tests_native
+<src_test/*.ml{,i,y}>: oasis_executable_ocaml_monadic_tests_native
+# OASIS_STOP

@@ -2,6 +2,7 @@
 /*.native
 /*.byte
 /setup.*
+!/setup.ml
 /Makefile
 /configure
 /lib/META

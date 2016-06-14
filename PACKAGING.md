@@ -5,7 +5,9 @@ The development branches of this repository do not contain information for OPAM 
 To package the software, follow these instructions:
 
   1. Merge the candidate for development into the `packaging` branch.
-  2. Update the contents of the `opam` directory accordingly and create a commit.
+  2. Run `oasis setup` to generate a new `setup.ml` file.
   3. Build and run the tests to be sure that nothing has gone wrong.
-  4. Use `opam-publish` to create a submission.  For the tarball URL, GitHub's commit-based tarballs should work.
-  5. Once the submission has passed all of the CI checks, tag the release.
+  4. Update the contents of the `opam` directory accordingly.
+  5. Create a commit for the release.
+  6. Use `opam-publish` to create a submission.  For the tarball URL, GitHub's commit-based tarballs should work.
+  7. Once the submission has passed all of the CI checks, tag the release.  If CI fails, correct the problem and return to step 5.

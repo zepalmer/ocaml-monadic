@@ -18,7 +18,7 @@ FilesAB: lib/META.ab
 
 Executable ocaml_monadic
     Path: src
-    BuildDepends: compiler-libs.common
+    BuildDepends: compiler-libs.common, ppx_tools, ppx_tools.metaquot
     MainIs: ocaml_monadic.ml
     CompiledObject: best
     Install: true
@@ -32,4 +32,3 @@ Executable ocaml_monadic_tests
 
 Test "test"
     Command: $ocaml_monadic_tests
-

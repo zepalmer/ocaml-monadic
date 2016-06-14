@@ -1,0 +1,2 @@
+REC
+FLG -ppx ../ocaml_monadic.native

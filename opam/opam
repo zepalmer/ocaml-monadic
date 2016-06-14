@@ -18,5 +18,7 @@ build-test: [
   ["ocaml" "setup.ml" "-test"]
 ]
 depends: [
+  "ocamlbuild" {build}
   "ocamlfind" {build}
+  "ppx_tools" {build}
 ]

@@ -1,0 +1,3 @@
+lib: "lib/META" { "META" }
+bin: "ocaml_monadic.native" { "ocaml_monadic" }
+

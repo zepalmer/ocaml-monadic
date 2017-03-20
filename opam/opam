@@ -1,0 +1,32 @@
+opam-version: "1.2"
+name: "ocaml-monadic"
+version: "0.3.2+dev"
+maintainer: "JHU PL Lab <pl.cs@jhu.edu>"
+authors: [ "JHU PL Lab <pl.cs@jhu.edu>" ]
+license: "BSD-3-clause"
+homepage: "http://github.com/zepalmer/ocaml-monadic"
+dev-repo: "https://github.com/zepalmer/ocaml-monadic.git"
+bug-reports: "https://github.com/zepalmer/ocaml-monadic/issues"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/ocaml-monadic/setup.ml" "-C" "%{etc}%/ocaml-monadic"
+    "-uninstall"]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "oasis" {build & >= "0.4.7"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ppx_tools"
+]
+available: [ ocaml-version >= "4.02" ]

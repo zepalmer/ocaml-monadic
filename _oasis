@@ -1,11 +1,12 @@
 Name: ocaml-monadic
-Version: 0.3.1
+Version: 0.3.2+dev
 Synopsis: PPX monadic
 Authors: JHU PL Lab <pl.cs@jhu.edu>
-Maintainers: JHU PL Lab <pl.cs@jhu.edu>
 License: BSD-3-clause
 
+Maintainers: JHU PL Lab <pl.cs@jhu.edu>
 Description: A simple PPX language extension to include monadic binds.
+Homepage: http://github.com/zepalmer/ocaml-monadic
 
 OASISFormat: 0.4
 BuildTools: ocamlbuild
@@ -14,11 +15,30 @@ AlphaFeatures: ocamlbuild_more_args
 XOCamlbuildExtraArgs: -use-ocamlfind
 
 OCamlVersion: >= 4.02
-FilesAB: lib/META.ab
+
+SourceRepository head
+    Type: git
+    Location: https://github.com/zepalmer/ocaml-monadic.git
+    Browser: https://github.com/zepalmer/ocaml-monadic.git
+    Branch: master
+
+Library ocaml-monadic
+    Path: src
+    BuildDepends:
+      compiler-libs.common,
+      ppx_tools,
+      ppx_tools.metaquot
+    Modules:
+      Ocaml_monadic_ppx
+    XMETAExtraLines: ppx = "ocaml_monadic"
 
 Executable ocaml_monadic
     Path: src
-    BuildDepends: compiler-libs.common, ppx_tools, ppx_tools.metaquot
+    BuildDepends:
+      compiler-libs.common,
+      ppx_tools,
+      ppx_tools.metaquot,
+      ocaml-monadic
     MainIs: ocaml_monadic.ml
     CompiledObject: best
     Install: true

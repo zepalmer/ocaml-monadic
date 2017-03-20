@@ -1,13 +1,28 @@
 # Packaging
 
-The development branches of this repository do not contain information for OPAM packaging.  Instead, this metadata is contained in a branch named `packaging`.  This allows the packaged and distributed version of the software to contain minor differences.  Most notably, the `packaging` branch uses a *static* version of the OASIS setup, preventing the released package from depending upon OASIS while allowing the use of dynamic OASIS builds during development.
+The following steps should be sufficient to package `ocaml-monadic` for distribution.
 
-To package the software, follow these instructions:
+  1. Run `make clean && make test` one more time.
 
-  1. Merge the candidate for development into the `packaging` branch.
-  2. Run `oasis setup` to generate a new `setup.ml` file.
-  3. Build and run the tests to be sure that nothing has gone wrong.
-  4. Update the contents of the `opam` directory accordingly.
-  5. Create a commit for the release.
-  6. Use `opam-publish` to create a submission.  For the tarball URL, GitHub's commit-based tarballs should work.
-  7. Once the submission has passed all of the CI checks, tag the release.  If CI fails, correct the problem and return to step 5.
+  2. Update version numbers and the like in the `_oasis` file.
+
+  3. Run `oasis2opam --local` to generate an `opam` file.  Note that you'll need
+     the `oasis2opam` OPAM package installed.  Commit the new files that are
+     created.
+
+  4. Use `opam pin add . jhupllib` and `opam pin remove jhupllib` to experiment
+     with the package metadata and make sure it's ready for publishing.
+
+  5. Run `opam-publish prepare jhupllib URL` where `URL` is the location of the
+     GitHub tarball reflecting the commit you are trying to release.
+
+  6. Run `opam-push submit DIR` where `DIR` is the directory created by
+     `opam-publish prepare`.
+
+  7. Follow the Travis CI builds on GitHub for the resulting pull request into
+     the OPAM repository.
+
+  8. Once the Travis CI is successful, tag the released commit.
+
+  9. Modify the `_oasis` file to contain a modified version (e.g. `0.1+dev`) to
+     distinguish the released version from future development.

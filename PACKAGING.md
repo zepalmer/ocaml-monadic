@@ -10,10 +10,10 @@ The following steps should be sufficient to package `ocaml-monadic` for distribu
      the `oasis2opam` OPAM package installed.  Commit the new files that are
      created.
 
-  4. Use `opam pin add . jhupllib` and `opam pin remove jhupllib` to experiment
-     with the package metadata and make sure it's ready for publishing.
+  4. Use `opam pin add . ocaml-monadic` and `opam pin remove ocaml-monadic` to
+     experiment with the package metadata and make sure it's ready for publishing.
 
-  5. Run `opam-publish prepare jhupllib URL` where `URL` is the location of the
+  5. Run `opam-publish prepare ocaml-monadic URL` where `URL` is the location of the
      GitHub tarball reflecting the commit you are trying to release.
 
   6. Run `opam-push submit DIR` where `DIR` is the directory created by

@@ -1,5 +1,5 @@
 Name: ocaml-monadic
-Version: 0.3.2+dev
+Version: 0.3.3
 Synopsis: PPX monadic
 Authors: JHU PL Lab <pl.cs@jhu.edu>
 License: BSD-3-clause

@@ -1,3 +1,4 @@
-PPX monadic
+OCaml monadic syntax extensions
 
-A simple PPX language extension to include monadic binds.
+A simple PPX language extension to include monadic operations that
+blend nicely with OCaml syntax.

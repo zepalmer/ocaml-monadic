@@ -1,11 +1,11 @@
 Name: ocaml-monadic
 Version: 0.3.3
-Synopsis: PPX monadic
+Synopsis: OCaml monadic syntax extensions
 Authors: JHU PL Lab <pl.cs@jhu.edu>
 License: BSD-3-clause
 
 Maintainers: JHU PL Lab <pl.cs@jhu.edu>
-Description: A simple PPX language extension to include monadic binds.
+Description: A simple PPX language extension to include monadic operations that blend nicely with OCaml syntax.
 Homepage: http://github.com/zepalmer/ocaml-monadic
 
 OASISFormat: 0.4

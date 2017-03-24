@@ -10,7 +10,7 @@ Homepage: http://github.com/zepalmer/ocaml-monadic
 
 OASISFormat: 0.4
 BuildTools: ocamlbuild
-Plugins: META (0.4), DevFiles (0.4)
+Plugins: META (0.4)
 AlphaFeatures: ocamlbuild_more_args
 XOCamlbuildExtraArgs: -use-ocamlfind
 

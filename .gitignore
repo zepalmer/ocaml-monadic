@@ -2,7 +2,4 @@
 /*.native
 /*.byte
 /setup.*
-/Makefile
-/configure
-/lib/META
 /opam/url

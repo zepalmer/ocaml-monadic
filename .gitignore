@@ -1,5 +1,3 @@
-/_build
-/*.native
-/*.byte
-/setup.*
-/opam/url
+_build/
+*.install
+.merlin

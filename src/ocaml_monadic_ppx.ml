@@ -1,11 +1,10 @@
+open Migrate_parsetree;;
+open OCaml_404.Ast;;
 open Ast_mapper;;
-open Ast_helper;;
 open Asttypes;;
 open Parsetree;;
-open Location;;
-open Longident;;
 
-let ocaml_monadic_mapper argv =
+let ocaml_monadic_mapper =
   (* We override the expr mapper to catch bind and orzero.  *)
   { default_mapper with
     expr = fun mapper expr ->
@@ -25,7 +24,7 @@ let ocaml_monadic_mapper argv =
               | { pvb_pat = bind_pattern
                 ; pvb_expr = bind_expr
                 ; pvb_attributes = []
-                ; pvb_loc = bind_loc
+                ; pvb_loc = _bind_loc
                 }::value_bindings'' ->
                 (* Recurse and then wrap the resulting body. *)
                 let body' = bind_wrap value_bindings'' in
@@ -65,7 +64,7 @@ let ocaml_monadic_mapper argv =
               | { pvb_pat = orzero_pattern
                 ; pvb_expr = orzero_expr
                 ; pvb_attributes = []
-                ; pvb_loc = orzero_loc
+                ; pvb_loc = _orzero_loc
                 }::value_bindings'' ->
                 (* Recurse and then wrap the resulting body. *)
                 let body' = orzero_wrap value_bindings'' in

@@ -5,7 +5,6 @@
   (public_name ocaml-monadic)
   (synopsis "Monad syntax ppx")
   (libraries (compiler-libs.common
-              ocaml-migrate-parsetree
-              ppx_tools_versioned))
+              ocaml-migrate-parsetree))
   (kind ppx_rewriter)
   (preprocess (pps (ppx_tools_versioned.metaquot_406)))))

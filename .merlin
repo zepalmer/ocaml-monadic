@@ -1,6 +1,0 @@
-PKG compiler-libs.common ppx_tools ppx_tools.metaquot
-S src/**
-S test/**
-B _build/src/**
-B _build/test/**
-EXT ounit

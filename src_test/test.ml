@@ -84,7 +84,7 @@ let zero_guard_interleave_test =
   let open NondeterminismMonad in
   let xss = [[0;1;2];[3;4];[5;6;7];[];[8;9;10]] in
   let%bind xs = xss in
-  let%orzero [a;b;c] = xs in
+  let%orzero [a;_b;c] = xs in
   [%guard a <> 0];
   return c
 ;;

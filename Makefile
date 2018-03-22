@@ -1,46 +1,13 @@
-# 2017-03-24 (ZEP): Prevent spurious "topdirs.cmi" warning due to use of OCaml
-# 									compiler libraries.
-#										(https://caml.inria.fr/mantis/view.php?id=6754)
-export OCAMLFIND_IGNORE_DUPS_IN := $(shell ocamlfind query compiler-libs)
-
-# OASIS_START
-# DO NOT EDIT (digest: a3c674b4239234cbbe53afe090018954)
-
-SETUP = ocaml setup.ml
-
-build: setup.data
-	$(SETUP) -build $(BUILDFLAGS)
-
-doc: setup.data build
-	$(SETUP) -doc $(DOCFLAGS)
-
-test: setup.data build
-	$(SETUP) -test $(TESTFLAGS)
+.PHONY: all clean repl test
 
 all:
-	$(SETUP) -all $(ALLFLAGS)
+	jbuilder build --dev
 
-install: setup.data
-	$(SETUP) -install $(INSTALLFLAGS)
+repl:
+	jbuilder utop src -- -require ocaml-monadic
 
-uninstall: setup.data
-	$(SETUP) -uninstall $(UNINSTALLFLAGS)
-
-reinstall: setup.data
-	$(SETUP) -reinstall $(REINSTALLFLAGS)
+test:
+	jbuilder runtest --dev
 
 clean:
-	$(SETUP) -clean $(CLEANFLAGS)
-
-distclean:
-	$(SETUP) -distclean $(DISTCLEANFLAGS)
-
-setup.data:
-	$(SETUP) -configure $(CONFIGUREFLAGS)
-
-configure:
-	$(SETUP) -configure $(CONFIGUREFLAGS)
-
-.PHONY: build doc test all install uninstall reinstall clean distclean configure
-
-# OASIS_STOP
+	jbuilder clean

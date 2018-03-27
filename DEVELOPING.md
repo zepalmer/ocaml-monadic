@@ -11,7 +11,7 @@ To view the output of the `ocaml-monadic` PPX rewriter, a command like the
 following is sufficient:
 
 ```
-ocamlfind ppx_tools/rewriter -ppx _build/default/src/ocaml_monadic.native test_file.ml
+ocamlfind ppx_tools/rewriter -ppx '_build/default/.ppx/ocaml-monadic/ppx.exe --as-ppx' src_test/test.ml
 ```
 
 This requires the OPAM package `ppx_tools_versioned` to be installed.

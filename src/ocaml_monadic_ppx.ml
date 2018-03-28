@@ -40,6 +40,23 @@ let ocaml_monadic_mapper =
                 mapper.expr mapper body
             in
             bind_wrap value_bindings
+          | Pexp_match (expr_match, cases) ->
+            let f = Ast_helper.Exp.function_ cases in
+            mapper.expr mapper ([%expr bind [%e expr_match] [%e f]] [@metaloc expr.pexp_loc])
+          | Pexp_ifthenelse (expr_if, expr_then, expr_else) ->
+            let expr_else =
+              match expr_else with
+              | None -> [%expr ()]
+              | Some case -> case
+            in
+            let cases =
+              [ Ast_helper.Exp.case [%pat? true] expr_then
+              ; Ast_helper.Exp.case [%pat? false] expr_else ]
+            in
+            let f = Ast_helper.Exp.function_ cases in
+            mapper.expr mapper ([%expr bind [%e expr_if] [%e f]] [@metaloc expr.pexp_loc])
+          | Pexp_sequence (expr_seq_l, expr_seq_r) ->
+            mapper.expr mapper ([%expr bind [%e expr_seq_l] (fun () -> [%e expr_seq_r])] [@metaloc expr.pexp_loc])
           | _ -> expr
         end
       | [%expr [%orzero [%e? expr]]] ->

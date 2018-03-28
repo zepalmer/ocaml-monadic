@@ -7,10 +7,25 @@ let string_of_list f xs =
     xs
 ;;
 
+let string_of_int_opt o =
+  match o with
+  | None -> "None"
+  | Some i -> Printf.sprintf "Some %d" i
+
 module NondeterminismMonad = struct
   let return x = [x];;
   let bind m k = List.concat (List.map k m);;
   let zero () = [];;
+end;;
+
+module Option = struct
+  let return x = Some x;;
+  let bind o f =
+    match o with
+    | None -> None
+    | Some x -> f x
+  ;;
+  let zero () = None;;
 end;;
 
 let nondeterminism_test =
@@ -18,6 +33,72 @@ let nondeterminism_test =
   let%bind x = [1;2;3] in
   let%bind y = [4;5] in
   return (x+y)
+;;
+
+let match_test =
+  let open Option in
+  let l = [None; Some 0; Some 1] in
+  List.map (
+    fun x ->
+      match%bind x with
+      | 0 -> return 1
+      | _ -> return 2
+  ) l
+;;
+
+let nested_match_test =
+  let open Option in
+  let l = [None; Some 0; Some 1] in
+  List.map (
+    fun x ->
+      match%bind x with
+      | 0 -> return 1
+      | _ ->
+        match%bind None with
+        | _ -> return 2
+  ) l
+;;
+
+let if_test =
+  let open Option in
+  let l = [None; Some true; Some false] in
+  List.map (
+    fun x ->
+      if%bind x then
+        return 1
+      else
+        return 2
+  ) l
+;;
+
+let nested_if_test =
+  let open Option in
+  let l = [None; Some true; Some false] in
+  List.map (
+    fun x ->
+      if%bind x then
+        if%bind None then
+          return 3
+        else
+          return 4
+      else
+        return 2
+  ) l
+;;
+
+let sequence_test =
+  let open Option in
+  let should_be_none =
+    None;%bind
+    Some ();%bind
+    return 1
+  in
+  let should_be_some =
+    Some ();%bind
+    Some ();%bind
+    return 1
+  in
+  [should_be_none; should_be_some]
 ;;
 
 let nested_bind_test =
@@ -99,6 +180,46 @@ let () =
       halt_with
         ("Unexpected value from nondeterminism test: " ^
          string_of_list string_of_int nondeterminism_test)
+  end;
+  begin
+    match match_test with
+    | [None; Some 1; Some 2] -> ()
+    | _ ->
+      halt_with
+        ("Unexpected value from match test: " ^
+         string_of_list string_of_int_opt match_test)
+  end;
+  begin
+    match nested_match_test with
+    | [None; Some 1; None] -> ()
+    | _ ->
+      halt_with
+        ("Unexpected value from nested match test: " ^
+         string_of_list string_of_int_opt nested_match_test)
+  end;
+  begin
+    match if_test with
+    | [None; Some 1; Some 2] -> ()
+    | _ ->
+      halt_with
+        ("Unexpected value from if test: " ^
+         string_of_list string_of_int_opt if_test)
+  end;
+  begin
+    match nested_if_test with
+    | [None; None; Some 2] -> ()
+    | _ ->
+      halt_with
+        ("Unexpected value from nested if test: " ^
+         string_of_list string_of_int_opt nested_if_test)
+  end;
+  begin
+    match sequence_test with
+    | [None; Some 1] -> ()
+    | _ ->
+      halt_with
+        ("Unexpected value from sequence test: " ^
+         string_of_list string_of_int_opt sequence_test)
   end;
   begin
     match nested_bind_test with

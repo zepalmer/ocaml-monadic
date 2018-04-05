@@ -6,8 +6,10 @@ At the time of this writing, the PPX syntax extensions for monads available in t
 
 ## Extensions
 
-### `let%bind`
-The first syntax extension provided by this library is the `let%bind` syntax.  This syntax applies only to non-recursive `let` expressions.  For instance, the code
+### `let%bind`, `if%bind`, `match%bind`, `;%bind`
+The first syntax extension provided by this library is the `%bind` syntax.
+
+`let%bind` is supported only for non-recursive `let` expressions.  For instance, the code
   ```ocaml
   let%bind x = [1;2;3] in
   let%bind y = [4;5;6] in
@@ -21,6 +23,48 @@ desugars to
     )
   )
   ```
+`if%bind` is supported.  The code
+  ```ocaml
+  if%bind x then
+    return a
+  else
+    return b
+  ```
+desugars to
+  ```ocaml
+  bind x (function
+  | true -> return a
+  | false return b
+  )
+  ```
+`match%bind` is supported with the code
+  ```ocaml
+  match%bind x with
+  | A -> return a
+  | B -> return b
+  ```
+desugars to
+  ```ocaml
+  bind x (function
+  | A -> return a
+  | B -> return b
+  )
+  ```
+`;%bind` is supported for sequence-like operations.  The code
+  ```ocaml
+  expr1 ;%bind
+  expr2 ;%bind
+  return ()
+  ```
+desugars to
+  ```ocaml
+  bind expr1 (fun () ->
+    bind expr2 (fun () ->
+      return ()
+    )
+  )
+  ```
+
 The function `bind` is assumed to be defined in local scope; this may occur in any fashion but is most easily accomplished with a local open (e.g. `let open MyMonad in`).
 
 ### `let%orzero`

@@ -23,7 +23,8 @@ desugars to
     )
   )
   ```
-`if%bind` is supported.  The code
+
+`if%bind` permits monadic values to be used directly in conditions.  The code
   ```ocaml
   if%bind x then
     return a
@@ -34,10 +35,11 @@ desugars to
   ```ocaml
   bind x (function
   | true -> return a
-  | false return b
+  | false -> return b
   )
   ```
-`match%bind` is supported with the code
+
+`match%bind` permits monadic values to be used as `match` subjects; the code
   ```ocaml
   match%bind x with
   | A -> return a
@@ -50,7 +52,8 @@ desugars to
   | B -> return b
   )
   ```
-`;%bind` is supported for sequence-like operations.  The code
+
+`;%bind` allows monadic unit expressions to be sequenced directly.  The code
   ```ocaml
   expr1 ;%bind
   expr2 ;%bind
@@ -65,7 +68,7 @@ desugars to
   )
   ```
 
-The function `bind` is assumed to be defined in local scope; this may occur in any fashion but is most easily accomplished with a local open (e.g. `let open MyMonad in`).
+In all of the above cases, the function `bind` is assumed to be defined in local scope; this may occur in any fashion but is most easily accomplished with a local open (e.g. `let open MyMonad in`).
 
 ### `let%orzero`
 The `let%orzero` extension, which also applies only to non-recursive `let` expressions, is used with monads that are equipped with a zero operation (such as monads for nondeterminism or exception handling).  It allows the refutable destruction of a value; refutations become zeroed.  For instance, the code

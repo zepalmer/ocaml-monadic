@@ -7,8 +7,8 @@ open Parsetree;;
 let ocaml_monadic_mapper =
   (* We override the expr mapper to catch bind and orzero.  *)
   { default_mapper with
-    expr = fun mapper expr ->
-      match expr with
+    expr = fun mapper outer_expr ->
+      match outer_expr with
       | [%expr [%bind [%e? expr]]] ->
         (* Matches "bind"-annotated expressions. *)
         begin
@@ -57,7 +57,7 @@ let ocaml_monadic_mapper =
             mapper.expr mapper ([%expr bind [%e expr_if] [%e f]] [@metaloc expr.pexp_loc])
           | Pexp_sequence (expr_seq_l, expr_seq_r) ->
             mapper.expr mapper ([%expr bind [%e expr_seq_l] (fun () -> [%e expr_seq_r])] [@metaloc expr.pexp_loc])
-          | _ -> expr
+          | _ -> default_mapper.expr mapper outer_expr
         end
       | [%expr [%orzero [%e? expr]]] ->
         (* Matches "orzero"-annotated expressions. *)
@@ -96,7 +96,7 @@ let ocaml_monadic_mapper =
                 mapper.expr mapper body
             in
             orzero_wrap value_bindings
-          | _ -> expr
+          | _ -> default_mapper.expr mapper outer_expr
         end
       | [%expr [%guard [%e? guard_expr]]; [%e? body_expr]] ->
         (* This is a sequenced expression with a [%guard ...] extension.  It
@@ -107,7 +107,7 @@ let ocaml_monadic_mapper =
         *)
         mapper.expr mapper
           [%expr if [%e guard_expr] then [%e body_expr] else zero ()]
-          [@metaloc expr.pexp_loc]
-      | _ -> default_mapper.expr mapper expr
+          [@metaloc outer_expr.pexp_loc]
+      | _ -> default_mapper.expr mapper outer_expr
   }
 ;;

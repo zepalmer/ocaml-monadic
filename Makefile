@@ -7,7 +7,7 @@ repl:
 	dune utop src -- -require ocaml-monadic
 
 test:
-	dune runtest --dev
+	dune runtest
 
 clean:
 	dune clean

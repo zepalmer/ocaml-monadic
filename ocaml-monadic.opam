@@ -5,10 +5,10 @@ license: "BSD-3-clause"
 homepage: "http://github.com/zepalmer/ocaml-monadic"
 dev-repo: "https://github.com/zepalmer/ocaml-monadic.git"
 bug-reports: "https://github.com/zepalmer/ocaml-monadic/issues"
-build:[ "jbuilder" "build" "-p" name "-j" jobs ]
-build-test: ["jbuilder" "runtest" "-p" name "-j" jobs]
+build:[ "dune" "build" "-p" name "-j" jobs ]
+build-test: ["dune" "runtest" "-p" name "-j" jobs]
 depends: [
-  "jbuilder" {build & >= "1.0+beta17"}
+  "dune" {build & >= "1.0.0"}
   "ocaml-migrate-parsetree"
   "ppx_tools_versioned"
 ]

@@ -1,10 +1,8 @@
-(jbuild_version 1)
-
 (executable
- ((name test)
-  (preprocess (pps (ocaml-monadic)))))
+  (name test)
+  (preprocess (pps ocaml-monadic)))
 
 (alias
- ((name runtest)
-  (deps (test.exe))
-  (action (run ${<}))))
+  (name runtest)
+  (deps test.exe)
+  (action (run ${<})))

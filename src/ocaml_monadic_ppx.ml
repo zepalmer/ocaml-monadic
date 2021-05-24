@@ -20,12 +20,8 @@ let bind_expand ~ctxt expr =
           :: value_bindings'' ->
             (* Recurse and then wrap the resulting body. *)
             let body' = bind_wrap value_bindings'' in
-            let cont_function =
-              ([%expr fun [%p bind_pattern] -> [%e body']]
-              [@metaloc expr.pexp_loc])
-            in
-            ([%expr bind [%e bind_expr] [%e cont_function]]
-            [@metaloc expr.pexp_loc])
+            let cont_function = [%expr fun [%p bind_pattern] -> [%e body']] in
+            [%expr bind [%e bind_expr] [%e cont_function]]
         | _ ->
             (* Nothing left to do.  Just return the body. *)
             body
@@ -33,7 +29,7 @@ let bind_expand ~ctxt expr =
       bind_wrap value_bindings
   | Pexp_match (expr_match, cases) ->
       let f = Ast_helper.Exp.function_ cases in
-      ([%expr bind [%e expr_match] [%e f]] [@metaloc expr.pexp_loc])
+      [%expr bind [%e expr_match] [%e f]]
   | Pexp_ifthenelse (expr_if, expr_then, expr_else) ->
       let expr_else =
         match expr_else with None -> [%expr ()] | Some case -> case
@@ -45,10 +41,9 @@ let bind_expand ~ctxt expr =
         ]
       in
       let f = Ast_helper.Exp.function_ cases in
-      ([%expr bind [%e expr_if] [%e f]] [@metaloc expr.pexp_loc])
+      [%expr bind [%e expr_if] [%e f]]
   | Pexp_sequence (expr_seq_l, expr_seq_r) ->
       [%expr bind [%e expr_seq_l] (fun () -> [%e expr_seq_r])]
-      [@metaloc expr.pexp_loc]
   | _ -> expr
 
 let orzero_expand ~ctxt expr =
@@ -78,11 +73,10 @@ let orzero_expand ~ctxt expr =
           :: value_bindings'' ->
             (* Recurse and then wrap the resulting body. *)
             let body' = orzero_wrap value_bindings'' in
-            ([%expr
-               match [%e orzero_expr] with
-               | [%p orzero_pattern] -> [%e body']
-               | _ -> zero ()]
-            [@metaloc expr.pexp_loc])
+            [%expr
+              match [%e orzero_expr] with
+              | [%p orzero_pattern] -> [%e body']
+              | _ -> zero ()]
         | _ ->
             (* Nothing left to do.  Just return the body. *)
             body

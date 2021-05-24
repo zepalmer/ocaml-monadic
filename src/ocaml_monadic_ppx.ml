@@ -1,7 +1,7 @@
 open Ppxlib
 
-let bind_expand ~ctxt expr =
-  let loc = Expansion_context.Extension.extension_point_loc ctxt in
+let bind_expand ~ctxt:_ expr =
+  let loc = expr.pexp_loc in
   match expr.pexp_desc with
   | Pexp_let (Nonrecursive, value_bindings, body) ->
       (* This is a let%bind expression!  It's of the form
@@ -46,8 +46,8 @@ let bind_expand ~ctxt expr =
       [%expr bind [%e expr_seq_l] (fun () -> [%e expr_seq_r])]
   | _ -> expr
 
-let orzero_expand ~ctxt expr =
-  let loc = Expansion_context.Extension.extension_point_loc ctxt in
+let orzero_expand ~ctxt:_ expr =
+  let loc = expr.pexp_loc in
   match expr.pexp_desc with
   | Pexp_let (Nonrecursive, value_bindings, body) ->
       (* This is a let%orzero expression.  It's of the form
